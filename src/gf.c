@@ -637,6 +637,10 @@ static void jl_compilation_sig(
             }
         }
 
+        if (jl_is_vararg_marker(elt)) {
+            continue;
+        }
+
         if (jl_types_equal(elt, (jl_value_t*)jl_type_type)) { // elt == Type{T} where T
             // not triggered for isdispatchtuple(tt), this attempts to handle
             // some cases of adapting a random signature into a compilation signature
@@ -742,7 +746,10 @@ static void jl_compilation_sig(
         size_t j = i;
         int all_are_subtypes = 1;
         for (; j < jl_svec_len(*newparams); j++) {
-            if (!jl_subtype(jl_svecref(*newparams, j), lasttype)) {
+            jl_value_t *paramj = jl_svecref(*newparams, j);
+            if (jl_is_vararg_marker(paramj))
+                paramj = jl_unwrap_vararg(paramj);
+            if (!jl_subtype(paramj, lasttype)) {
                 all_are_subtypes = 0;
                 break;
             }
