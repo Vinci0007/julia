@@ -7508,9 +7508,6 @@ end
 @test compare_union37557(Ref{Union{Int,Vector{Int}}}(1),
                          Ref{Union{Int,Vector{Int}}}(1))
 
-# Issue #30807
-@test_throws TypeError NTuple{<:Any, 3}
-
 # Redfining types with Vararg
 abstract type RedefineVararg; end
 const RedefineVarargN{N} = Tuple{Vararg{RedefineVararg, N}}
